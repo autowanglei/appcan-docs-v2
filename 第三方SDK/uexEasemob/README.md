@@ -8,7 +8,7 @@
 * 群聊功能:支持500人到2000人大群,拥有完善的群组权限管理;
 * 实时语音:基于IP网络的点对点实时语音,适应低带宽要求;
 * 客服功能(iOS 3.0.22,Android 3.0.23及以上支持):基于新一代移动互联网技术的全媒体智能客户关系中心系统,详情见[环信移动客服文档](http://docs.easemob.com/cs/300visitoraccess/10nativeapp)
-
+* 支持小米推送功能
 > **使用前说明:**
 
 本插件为单例插件 ——
@@ -65,7 +65,7 @@ Path Types
 
 在后续版本中新添加的接口会在文档中额外说明. 
 
-## 1.7、 接入小米推送
+## 1.7、 接入小米推送（环信目前已经不支持）
 
 正常情况下应用在小米手机上被杀之后是无法收到消息的，现在可以通过接入小米推送来收消息，步骤如下：
 
@@ -93,7 +93,29 @@ Path Types
   ​
 
 
+## 1.8、接入华为推送
 
+正常情况下应用在华为手机上被杀之后是无法收到消息的，现在可以通过接入华为推送来收消息，步骤如下：
+
+- 进入[华为开发者后台](http://developer.huawei.com/cn/consumer/devunion/openPlatform/html/memberCenter.html#appManage#)，创建一个应用，完成后配置push权益。创建完成后，会自动生成的APP ID及APP SECRET，进入[环信管理后台](http://console.easemob.com/)，选择你的应用—>选择推送证书—>Huawei—>新增证书。
+
+  证书名称为刚从华为后台拿到的 APP ID，证书密钥为 APP SECRET，点击上传即可。
+
+- 打包勾选华为推送（如果应用有百度地图的插件，需要使用华为推送无百度地图版本的，否则会打包失败）
+
+- `uexEasemob.initEasemob`增加参数`huaweiPushAppId`
+
+- `config.xml` 添加配置
+
+  ```xml
+  <config desc="uexHuaweiPush" type="KEY">
+          <param name="org.zywx.wbpalmstar.plugin.uexhuaweipush.MyReceiver" platform="Android" value="com.hyphenate.chat.EMHuaweiPushReceiver"/>
+  </config>
+  ```
+
+- 所有发送消息的接口都添加了`ignoreNotification`(bool类型，发送静默消息)、`forceNotification`(bool类型，发送强制推送)、`pushTitle`(String类型，自定义推送的标题)
+
+  对应于http://docs.easemob.com/im/200androidclientintegration/115thirdpartypush三种华为推送类型。
 
 # 2、API概述
 
@@ -984,13 +1006,8 @@ callback拥有一个参数data,`Array<EMChatterInfo>`类型 一个由EMChatterI
 
 callback是回调函数,Function类型
 
-callback拥有一个参数data,Object类型 
+callback拥有一个参数data,Array<String>类型 用户姓名字符串构成的数组	
 
-```js
-var data = {
-	usernames:,//Array<String>,用户姓名字符串构成的数组	
-};
-```
 
 
 ​   
@@ -1996,7 +2013,6 @@ var param = {
 
 * 以下方法全部仅限iOS
 * 当启用其他包含APNs功能测插件时,不建议使用环信自带的APNs时功能
-
 
 
 ***
